@@ -13,7 +13,7 @@ export default function TodoList() {
   };
 
   const updatedTodo = (id, modifiedTodo) => {
-    if (!modifiedTodo.value) return;
+    if (modifiedTodo.text === "") return null;
 
     setTodos((list) =>
       list.map((todo, index) => (index === id ? modifiedTodo : todo))
