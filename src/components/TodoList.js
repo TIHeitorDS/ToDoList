@@ -1,49 +1,37 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import Todo from "./Todo";
 import TodoForm from "./TodoForm";
 
-const TodoList = () => {
+export default function TodoList() {
   const [todos, setTodos] = useState([]);
 
   const addTodo = (todo) => {
-    if (!todo.text) return;
+    if (todo.text === "") return;
     const newTodo = [todo, ...todos];
 
     setTodos(newTodo);
   };
 
-  const completeTodo = (id) => {
-    let updateTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        todo.isComplete = todo.isComplete;
-      }
-      return todo;
-    });
+  const updatedTodo = (id, modifiedTodo) => {
+    if (!modifiedTodo.value) return;
 
-    setTodos(updateTodos);
-  };
-
-  const removeTodo = (id) => {
-    const delTodo = [...todos].filter((todo) => todo.id !== id);
-
-    setTodos(delTodo);
-  };
-
-  const updateTodo = (todoId, todoValue) => {
-    if (!todoValue.text) return;
-
-    setTodos((prev) =>
-      prev.map((item) => (item.id === todoId ? todoValue : item))
+    setTodos((list) =>
+      list.map((todo, index) => (index === id ? modifiedTodo : todo))
     );
   };
 
-  return (
-    <div>
-      <h1>What's the plan today?</h1>
-      <TodoForm onSubmit={addTodo} />
-      <Todo todos={todos} completeTodo={completeTodo} removeTodo={removeTodo} updateTodo={updateTodo}/>
-    </div>
-  );
-};
+  const deleteTodo = (todo) => {
+    const removedTodo = todos.filter((del) => del !== todo);
 
-export default TodoList;
+    setTodos(removedTodo);
+  };
+
+  return (
+    <Fragment>
+      <TodoForm onSubmit={addTodo} />
+      <ul className="">
+        <Todo todos={todos} submitTodo={updatedTodo} remove={deleteTodo} />
+      </ul>
+    </Fragment>
+  );
+}

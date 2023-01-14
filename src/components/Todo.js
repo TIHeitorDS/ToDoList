@@ -1,45 +1,44 @@
 import React, { useState } from "react";
-import { RiCloseLine } from "react-icons/ri";
-import { BiEdit } from "react-icons/bi";
+import { AiFillEdit } from "react-icons/ai";
+import { TiDelete } from "react-icons/ti";
 import TodoForm from "./TodoForm";
 
-const Todo = (props) => {
+export default function Todo(props) {
   const [edit, setEdit] = useState({
     id: null,
     value: "",
   });
 
-  const submitUpdate = (value) => {
-    props.updateTodo(edit.id, value);
+  const editedTodo = (newTodo) => {
+    props.submitTodo(edit.id, newTodo);
+
     setEdit({
       id: null,
       value: "",
     });
   };
 
-  if (edit.id) return <TodoForm edit={edit} onSubmit={submitUpdate} />;
-
+  if (edit.value !== "") return <TodoForm onSubmit={editedTodo} />;
   return props.todos.map((todo, index) => (
-    <div
-      className={todo.isComplete ? "todo-row complete" : "todo-row"}
-      key={index}
-    >
-      <div key={todo.id} onClick={() => props.completeTodo(todo.Id)}>
-        {todo.text}
-      </div>
-
+    <li className="todo-row" key={index}>
+      {todo.text}
       <div className="icons">
-        <RiCloseLine
-          className="delete-icon"
-          onClick={() => props.removeTodo(todo.id)}
-        />
-        <BiEdit
+        <button
           className="edit-icon"
-          onClick={() => setEdit({ id: todo.id, value: todo.text })}
-        />
-      </div>
-    </div>
-  ));
-};
+          onClick={() => setEdit({ value: todo.text, id: index })}
+        >
+          <AiFillEdit />
+        </button>
 
-export default Todo;
+        <button
+          className="delete-icon"
+          onClick={() => {
+            props.remove(todo);
+          }}
+        >
+          <TiDelete />
+        </button>
+      </div>
+    </li>
+  ));
+}
